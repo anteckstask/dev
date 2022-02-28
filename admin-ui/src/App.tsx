@@ -1,0 +1,83 @@
+import React, { useEffect, useState } from "react";
+import { Admin, DataProvider, Resource } from "react-admin";
+import buildGraphQLProvider from "./data-provider/graphqlDataProvider";
+import { theme } from "./theme/theme";
+import Login from "./Login";
+import "./App.scss";
+import Dashboard from "./pages/Dashboard";
+import { UserList } from "./user/UserList";
+import { UserCreate } from "./user/UserCreate";
+import { UserEdit } from "./user/UserEdit";
+import { UserShow } from "./user/UserShow";
+import { HouseList } from "./house/HouseList";
+import { HouseCreate } from "./house/HouseCreate";
+import { HouseEdit } from "./house/HouseEdit";
+import { HouseShow } from "./house/HouseShow";
+import { TestEntityList } from "./testEntity/TestEntityList";
+import { TestEntityCreate } from "./testEntity/TestEntityCreate";
+import { TestEntityEdit } from "./testEntity/TestEntityEdit";
+import { TestEntityShow } from "./testEntity/TestEntityShow";
+import { Test1List } from "./test1/Test1List";
+import { Test1Create } from "./test1/Test1Create";
+import { Test1Edit } from "./test1/Test1Edit";
+import { Test1Show } from "./test1/Test1Show";
+import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
+
+const App = (): React.ReactElement => {
+  const [dataProvider, setDataProvider] = useState<DataProvider | null>(null);
+  useEffect(() => {
+    buildGraphQLProvider
+      .then((provider: any) => {
+        setDataProvider(() => provider);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  }, []);
+  if (!dataProvider) {
+    return <div>Loading</div>;
+  }
+  return (
+    <div className="App">
+      <Admin
+        title={"My app"}
+        dataProvider={dataProvider}
+        authProvider={jwtAuthProvider}
+        theme={theme}
+        dashboard={Dashboard}
+        loginPage={Login}
+      >
+        <Resource
+          name="User"
+          list={UserList}
+          edit={UserEdit}
+          create={UserCreate}
+          show={UserShow}
+        />
+        <Resource
+          name="House"
+          list={HouseList}
+          edit={HouseEdit}
+          create={HouseCreate}
+          show={HouseShow}
+        />
+        <Resource
+          name="TestEntity"
+          list={TestEntityList}
+          edit={TestEntityEdit}
+          create={TestEntityCreate}
+          show={TestEntityShow}
+        />
+        <Resource
+          name="Test1"
+          list={Test1List}
+          edit={Test1Edit}
+          create={Test1Create}
+          show={Test1Show}
+        />
+      </Admin>
+    </div>
+  );
+};
+
+export default App;
